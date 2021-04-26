@@ -1,0 +1,59 @@
+{% load static %}
+<header
+  class="navbar navbar-header navbar-header-fixed"
+  style="background-color: "
+>
+  <a href="" id="sidebarMenuOpen" class="burger-menu"
+    ><i data-feather="menu"></i
+  ></a>
+  <div class="navbar-brand">
+    <a href="" class="df-logo">Salon<span>Zar</span></a>
+  </div>
+
+  <div class="navbar-right">
+    <a
+      href="{% url 'login_page' %}"
+      class="ml-auto btn btn-primary"
+      value="click"
+      onclick=""
+      >Login</a
+    >
+    <a
+      href="{% url 'resgisteroption' %}"
+      class="ml-auto btn btn-primary"
+      value="click"
+      onclick=""
+      >Register</a
+    >
+
+    <div class="dropdown dropdown-profile">
+      <a
+        href=""
+        class="dropdown-link"
+        data-toggle="dropdown"
+        data-display="static"
+      >
+        <div class="avatar avatar-sm avatar-online">
+          <span class="avatar-initial rounded-circle"> </span>
+        </div> </a
+      ><!-- dropdown-link -->
+      <div class="dropdown-menu dropdown-menu-right tx-13">
+        <div class="avatar avatar-lg avatar-online mg-b-15">
+          <span class="avatar-initial rounded-circle"> </span>
+        </div>
+        <h6 class="tx-semibold mg-b-5"></h6>
+        <p class="mg-b-25 tx-12 tx-color-03"></p>
+
+        <div class="dropdown-divider"></div>
+
+        <a href="{% url 'logoutuser' %}" class="dropdown-item"
+          ><i data-feather="log-out"></i>Sign Out</a
+        >
+      </div>
+      <!-- dropdown-menu -->
+    </div>
+    <!-- dropdown -->
+  </div>
+  <!-- navbar-right -->
+</header>
+<!-- navbar -->

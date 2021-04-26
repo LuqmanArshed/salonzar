@@ -1,0 +1,73 @@
+{% extends 'pages/base.html' %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0">
+  <div class="card">
+    <div class="card-header bg-primary">
+      <h3 class="tx-white"><b>NewSaloon</b></h3>
+    </div>
+    <div class="card-body">
+      <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-6">
+            {{ form.title|as_crispy_field }}
+          </div>
+
+          <div class="form-group col-md-6 mb-0">
+            <div id="datepicker1">{{ form.blog_date|as_crispy_field }}</div>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group col-md-6 mb-0">
+            {{ form.language|as_crispy_field }}
+          </div>
+
+          <div class="form-group col-md-6 mb-0">
+            {{ form.category|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            {{ form.header|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-12">
+            {{ form.details|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-4">
+            <label style="font-weight: normal !important">Thumbnail</label>
+            <input type="file" name="thumbnail" class="btn" />
+          </div>
+
+          <div class="form-group col-md-4">
+            <label style="font-weight: normal !important">Title Image</label>
+            <input type="file" name="title_image" class="btn" />
+          </div>
+
+          <div class="form-group col-md-4">
+            <label style="font-weight: normal !important">Center Image</label>
+            <input type="file" name="center_image" class="btn" />
+          </div>
+        </div>
+
+        <div class="float-right">
+          <a class="btn btn-danger" href="{% url 'user_home' %}">Cancel</a>
+          <button class="btn btn-primary" type="submit">Publish</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+
+<script>
+  $(".dateinput").datepicker();
+</script>
+{% endblock %}

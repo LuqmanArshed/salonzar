@@ -1,0 +1,90 @@
+{% extends 'pages/base.html' %} {% load static %} {% block content %}
+
+<div class="container col-lg-11">
+  <div
+    class="d-sm-flex align-items-center justify-content-between mg-b-20 mg-lg-b-25 mg-xl-b-30"
+  ></div>
+  <div class="col-lg-12 col-xl-12 mg-t-10"></div>
+
+  <div class="row">
+    <img
+      src="{{blog.title_image.url}}"
+      class="card-img-top"
+      alt=""
+      data-holder-rendered="true"
+    />
+  </div>
+  <div class="row">
+    {% if check %}
+    <div>
+      <h4 class="mg-t-20"><b>{{blog.title}}</b></h4>
+    </div>
+    {% else %}
+    <div class="float-right">
+      <h4
+        class="mg-t-20"
+        style="
+          font-family: 'Noto Naskh Arabic', serif;
+          font-size: 1.5em;
+          direction: rtl;
+        "
+      >
+        <b>{{blog.title}}</b>
+      </h4>
+    </div>
+    {% endif %}
+  </div>
+  <div class="row">
+    {% if check %}
+    <div>
+      <p class="mg-t-20">{{blog.header}}</p>
+    </div>
+    {% else %}
+    <div>
+      <p
+        class="mg-t-20"
+        style="
+          font-family: 'Noto Naskh Arabic', serif;
+          font-size: 1.5em;
+          direction: rtl;
+        "
+      >
+        {{blog.header}}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+
+  <div class="row">
+    <img
+      src="{{blog.center_image.url}}"
+      class="card-img-top"
+      alt=""
+      data-holder-rendered="true"
+    />
+  </div>
+
+  <div class="row">
+    {% if check %}
+    <div>
+      <p class="mg-t-20">{{blog.details}}</p>
+    </div>
+    {% else %}
+    <div>
+      <p
+        class="mg-t-20"
+        style="
+          font-family: 'Noto Naskh Arabic', serif;
+          font-size: 1.5em;
+          direction: rtl;
+        "
+      >
+        {{blog.details}}
+      </p>
+    </div>
+    {% endif %}
+  </div>
+</div>
+<!-- container -->
+
+{% endblock %}

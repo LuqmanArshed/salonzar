@@ -1,0 +1,61 @@
+{% load static %} {% load crispy_forms_tags %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <!-- Required meta tags -->
+    <meta charset="utf-8" />
+    <meta
+      name="viewport"
+      content="width=device-width, initial-scale=1, shrink-to-fit=no"
+    />
+
+    <!-- Favicon -->
+    <link
+      rel="shortcut icon"
+      type="image/x-icon"
+      href="{% static '/img/favicon.png' %}"
+    />
+
+    <title>CMS - Diamond Metals</title>
+
+    <!-- vendor css -->
+    <link
+      href="{% static '/lib/@fortawesome/fontawesome-free/css/all.min.css' %}"
+      rel="stylesheet"
+    />
+    <link
+      href="{% static '/lib/ionicons/css/ionicons.min.css' %}"
+      rel="stylesheet"
+    />
+
+    <!-- DashForge CSS -->
+    <link rel="stylesheet" href="{% static '/css/dashforge.css' %}" />
+    <link rel="stylesheet" href="{% static '/css/dashforge.auth.css' %}" />
+  </head>
+  <body>
+    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 mg-t-40">
+      <div class="card">
+        <div class="card-header btn btn-primary">
+          <h3>Register For Business</h3>
+        </div>
+        <div class="card-body">
+          <form action="" method="POST" enctype="multipart/form-data">
+            {% csrf_token %} {{form | crispy}}
+
+            <button class="btn btn-primary btn-block" type="submit">
+              Register
+            </button>
+          </form>
+        </div>
+        <div class="divider-text">or</div>
+
+        <div class="tx-13 mg-t-20 tx-center">
+          Already have an account?
+          <a href="{% url 'login_page' %}">Sign In</a>
+        </div>
+      </div>
+    </div>
+
+    <!-- content -->
+  </body>
+</html>
