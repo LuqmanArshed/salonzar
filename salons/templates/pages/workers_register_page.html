@@ -35,16 +35,13 @@
   <body>
     <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 mg-t-40">
       <div class="card">
-        <div class="card-header btn btn-primary bg-primary">
-          <h3 class="tx-white">Register For Business</h3>
+        <div class="card-header btn btn-primary">
+          <h3>Add Worker</h3>
         </div>
         <div class="card-body">
           <form action="" method="POST" enctype="multipart/form-data">
             {% csrf_token %} {{form | crispy}}
-            <div class="form-group col-md-4">
-              <label style="font-weight: normal !important">Thumbnail</label>
-              <input type="file" name="thumbnail" class="btn" />
-            </div>
+
             <button class="btn btn-primary btn-block" type="submit">
               Next
             </button>

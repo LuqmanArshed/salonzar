@@ -51,21 +51,62 @@ def registerPage(request):
 
 
 def business_registerPage(request):
-    form = busines_resgiter_form(initial = {'status':'pending'})
+    form = busines_resgiter_form(initial={'status':'pending'})
     if request.method == 'POST':
-        form = busines_resgiter_form(request.POST)
+        form = busines_resgiter_form(request.POST,request.FILES)
+        files = request.FILES.getlist('thumbnail')
         if form.is_valid():
-            form.save()
-            return redirect('login_page')
+            obj=form.save()
+            for image in files:
+                obj.thumbnail = image
+                obj.save()
+            return redirect('all_sw',obj.id)
         
 
     context = {'form':form}
     return render(request, 'pages/business_register.html', context)
 
 
+def workers_services(request,id):
+    salon = Salon.objects.get(id=id)
+    all_workers = SalonWorker.objects.filter(salon=salon)
+    all_services = Service.objects.filter(salon=salon)
+    context={'all_workers':all_workers,'s_id':id,'all_services':all_services}
+    return render(request,'pages/workers_serivces.html',context)
+
+
+
+def worker_registerPage(request,id):
+    salon = Salon.objects.get(id=id)
+    form = salon_worker_form(initial = {'salon':salon})
+    if request.method == 'POST':
+        form = salon_worker_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('all_sw',id)
+        
+
+    context = {'form':form}
+    return render(request, 'pages/workers_register_page.html', context)
+
+
+
+def service_registerPage(request,id):
+    salon = Salon.objects.get(id=id)
+    form = salon_serice_form(initial = {'salon':salon})
+    if request.method == 'POST':
+        form = salon_serice_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('all_sw',id)
+        
+
+    context = {'form':form}
+    return render(request, 'pages/workers_register_page.html', context)    
+
 
 def home(request):
-    all_salons = Salon.objects.all()
+    all_salons = Salon.objects.filter(status='approved')
     context={'all_salons':all_salons}
     return render(request,'pages/home.html',context)
 
@@ -79,10 +120,17 @@ def register_option(request):
 
 
 def admin_home(request):
-    all_requests = BusinessRegister.objects.all()
+    all_requests = Salon.objects.all()
     context={'all_requests':all_requests}
     return render(request,'pages/admin_panel.html',context)
 
+
+def approve_salon(request,id):
+    salon = Salon.objects.get(id=id)
+    salon.status = 'approved'
+    salon.save()
+    return redirect('admin_home')
+    
 
 # def blog_view(request,id):
 #     blog = Salons.objects.get(id=id)
@@ -103,27 +151,27 @@ def admin_home(request):
 #     return render(request,'pages/user_panel.html',context)
 
 
-def new_blog(request):
-    form = new_salon_form(request.POST,request.FILES)
-    files = request.FILES.getlist('thumbnail')
-    files1 = request.FILES.getlist('title_image')
-    files2 = request.FILES.getlist('center_image')
-    if request.method == 'POST':
-        if form.is_valid():
-            obj = form.save()
-            for image in files:
-                obj.thumbnail = image
-                obj.save()
-            for imag in files1:
-                obj.title_image = imag
-                obj.save()
-            for img in files2:
-                obj.center_image = img
-                obj.save()        
-            return redirect('user_home')
+# def new_blog(request):
+#     form = new_salon_form(request.POST,request.FILES)
+#     files = request.FILES.getlist('thumbnail')
+#     files1 = request.FILES.getlist('title_image')
+#     files2 = request.FILES.getlist('center_image')
+#     if request.method == 'POST':
+#         if form.is_valid():
+#             obj = form.save()
+#             for image in files:
+#                 obj.thumbnail = image
+#                 obj.save()
+#             for imag in files1:
+#                 obj.title_image = imag
+#                 obj.save()
+#             for img in files2:
+#                 obj.center_image = img
+#                 obj.save()        
+#             return redirect('user_home')
 	
-    context = {'form':form}
-    return render(request,'pages/new_salon.html',context)
+#     context = {'form':form}
+#     return render(request,'pages/new_salon.html',context)
 
 
 # @login_required(login_url=login_page)
