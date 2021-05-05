@@ -1,0 +1,56 @@
+{% extends 'pages/base.html' %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="container col-lg-10 pd-x-0 pd-lg-x-10 pd-xl-x-0">
+  <div class="card">
+    <div class="card-header bg-primary">
+      <h3 class="tx-white">{{salon.shop_name}}</h3>
+    </div>
+    <div class="card-body">
+      <div class="table-responsive">
+        <table class="table table-borderless">
+          <tbody>
+            <tr>
+              <td>
+                <div class="media-body pd-l-15">
+                  <span class="d-block tx-13 tx-color-03">Shop Name</span>
+                  <h6 class="mg-b-3">{{salon.shop_name}}</h6>
+                </div>
+              </td>
+              <td>
+                <div class="media-body pd-l-15">
+                  <span class="d-block tx-13 tx-color-03">Contact</span>
+                  <h6 class="mg-b-3">{{salon.phone}}</h6>
+                </div>
+              </td>
+              <td>
+                <div class="media-body pd-l-15">
+                  <span class="d-block tx-13 tx-color-03">Email</span>
+                  <h6 class="mg-b-3">{{salon.email}}</h6>
+                </div>
+              </td>
+              <td>
+                <div class="media-body pd-l-15">
+                  <span class="d-block tx-13 tx-color-03">No of Workers</span>
+                  <h6 class="mg-b-3">{{salon.no_of_workers}}</h6>
+                </div>
+              </td>
+              <td>
+                <div class="media-body pd-l-15">
+                  <span class="d-block tx-13 tx-color-03">Service Type</span>
+                  <h6 class="mg-b-3">{{salon.serivice_type}}</h6>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %} {% block scripts %}
+
+<script>
+  $(".dateinput").datepicker();
+</script>
+{% endblock %}

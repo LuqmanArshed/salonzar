@@ -111,6 +111,17 @@ def home(request):
     return render(request,'pages/home.html',context)
 
 
+def salon_view(request,id):
+    salon = Salon.objects.get(id=id)
+    salon_services = Service.objects.filter(salon=salon)
+    salon_workers = SalonWorker.objects.filter(salon=salon)
+
+    context={'salon':salon,'salon_services':salon_services, "salon_workers":salon_workers}
+    return render(request,'pages/salon_view.html',context)
+
+
+
+
 
 def register_option(request):
     context={}
@@ -130,6 +141,14 @@ def approve_salon(request,id):
     salon.status = 'approved'
     salon.save()
     return redirect('admin_home')
+
+
+def salon_details(request,id):
+    salon = Salon.objects.get(id=id)
+    context={'salon':salon}
+    return render(request,'pages/salon.html',context)
+
+        
     
 
 # def blog_view(request,id):
