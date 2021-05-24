@@ -19,12 +19,25 @@ urlpatterns = [
      path('business_register/', views.business_registerPage, name='busineess_register_page'),
      path('logout/', views.logoutuser, name='logoutuser'),
      path('selectoption/', views.register_option, name='resgisteroption'),
+     
      path('controller_home/', views.admin_home, name='admin_home'),
       path('approved/<int:id>', views.approve_salon, name='approve_salon'),
 
 
+     path('salon_admin/', views.salon_user_page, name='salon_user'), 
+     path('salon_page/<int:id>', views.salon_view, name='salon_page'),
+     path('add_new_slot/<int:id>', views.add_slot, name='add_slot'), 
+     path('add_product/<int:id>', views.add_new_product, name='add_product'),
+     path('worker_slots/<int:id>', views.worker_slots, name='worker_slots'), 
 
-     path('salon_page/<int:id>', views.salon_view, name='salon_page'), 
+
+      path('new_order/<int:id>', views.new_order, name='order'),
+      path('cart/', views.cart, name='cart'),
+      path('order_now/', views.order_now, name='order_now'),
+      path('order_status/<int:id>', views.change_order_status, name='complete_order_status'),
+
+
+
    
     
 ]

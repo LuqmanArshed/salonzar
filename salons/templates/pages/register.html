@@ -45,6 +45,22 @@
               <form action="" method="POST" enctype="multipart/form-data">
                 {% csrf_token %} {{form | crispy}}
                 <!-- form-group -->
+                <div class="form-group">
+                  <label>Contact</label>
+                  <input
+                    name="contact"
+                    class="form-control"
+                    placeholder="yourname@yourmail.com"
+                  />
+                </div>
+                <div class="form-group">
+                  <label>Address</label>
+                  <input
+                    name="address"
+                    class="form-control"
+                    placeholder="yourname@yourmail.com"
+                  />
+                </div>
 
                 <button class="btn btn-brand-02 btn-block">
                   Create Account
@@ -65,7 +81,13 @@
           </div>
           <!-- sign-wrapper -->
           <div
-            class="media-body pd-y-30 pd-lg-x-50 pd-xl-x-60 align-items-center d-none d-lg-flex pos-relative"
+            class="
+              media-body
+              pd-y-30 pd-lg-x-50 pd-xl-x-60
+              align-items-center
+              d-none d-lg-flex
+              pos-relative
+            "
           >
             <div class="mx-lg-wd-500 mx-xl-wd-550">
               <img src="/static/images/beard.jpg" class="img-fluid" alt="" />

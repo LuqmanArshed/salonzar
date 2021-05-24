@@ -1,16 +1,10 @@
 from django.db import models
 
 
+from django.contrib.auth.models import User
+from django.db.models.deletion import CASCADE
 
 
-class Customer(models.Model):
-	name = models.CharField(max_length=200, null=True)
-	phone = models.CharField(max_length=200, null=True)
-	email = models.CharField(max_length=200, null=True)
-	date_created = models.DateTimeField(auto_now_add=True, null=True)
-
-	def __str__(self):
-		return self.name
 
 
 class Page(models.Model):
@@ -59,6 +53,7 @@ class Salon(models.Model):
         (APPROVED,'Approved')
 
     ]
+    user = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
     shop_name = models.CharField(max_length=200,null=True)
     phone = models.CharField(max_length=200, null=True)
     email = models.CharField(max_length=200, null=True)
@@ -87,6 +82,26 @@ class SalonWorker(models.Model):
         return self.worker_name
 
 
+class Slot(models.Model):
+    BOOKED = 'booked'
+    AVAILABLE = 'available'
+    slot_choices = [
+        (BOOKED,'booked'),
+        (AVAILABLE,'available')
+    ]
+    worker = models.ForeignKey(SalonWorker,null=True,blank=True,on_delete=models.CASCADE)
+    slot_start_time = models.CharField(max_length=200,null=True)
+    slot_end_time = models.CharField(max_length=200,null=True)
+    slot_status = models.CharField(max_length=200,null=True,choices=slot_choices)
+    def __str__(self):
+        return self.slot_start_time + " to " + self.slot_end_time
+
+
+
+
+
+
+
 class Service(models.Model):
     salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
     service_name = models.CharField(max_length=200,null=True)
@@ -95,12 +110,38 @@ class Service(models.Model):
         return self.service_name
 
 
+
+class Cart(models.Model):
+    user = models.OneToOneField(User,null=True,on_delete=models.CASCADE)
+    address = models.CharField(max_length=200,null=True)
+    phone = models.CharField(max_length=200,null=True)
+
+
+
 class Order(models.Model):
+    INPROGRESS = 'inprogress'
+    COMPLETE = 'complete'
+    order_choices = [
+        (INPROGRESS,'inprogress'),
+        (COMPLETE,'complete')
+    ]
+    cart = models.ForeignKey(Cart,null=True,blank=True,on_delete=models.CASCADE)
     salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
     service = models.ForeignKey(Service,null=True,blank=True,on_delete=models.CASCADE)
     worker = models.ForeignKey(SalonWorker,null=True,blank=True,on_delete=models.CASCADE)
-     
-     
+    slot = models.ForeignKey(Slot,null=True,blank=True,on_delete=models.CASCADE)
+    order_status = models.CharField(max_length=200,null=True,blank=True,choices=order_choices)
+    total = models.IntegerField(null=True,blank=True)
 
 
+
+     
+     
+class Product(models.Model):
+    salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
+    product_name = models.CharField(max_length=200,null=True,blank=True)
+    product_price = models.IntegerField(null=True,blank=True)
+    product_image= models.ImageField(upload_to='Products/',null=True,blank=True)
+    def __str__(self):
+        return self.product_name
 

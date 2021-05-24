@@ -1,8 +1,5 @@
-{% load static %}
-<header
-  class="navbar navbar-header navbar-header-fixed"
-  style="background-color: "
->
+{% load static %}{% load user_tags %}
+<header class="navbar navbar-header navbar-header-fixed">
   <a href="" id="sidebarMenuOpen" class="burger-menu"
     ><i data-feather="menu"></i
   ></a>
@@ -11,6 +8,10 @@
   </div>
 
   <div class="navbar-right">
+    {% if request.user|has_group:"customer" %}
+    <a href="{% url 'cart' %}"><i data-feather="shopping-cart"></i></a>
+    {% endif %}
+
     <div class="dropdown dropdown-profile">
       <a
         href=""

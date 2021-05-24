@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import Page,Salon,SalonWorker,Service
+from .models import Order, Page, Product,Salon,SalonWorker,Service, Slot
 
 
 class new_salon_form(ModelForm):
@@ -21,9 +21,22 @@ class salon_worker_form(ModelForm):
 		fields = '__all__'
 
 
+class new_order_form(ModelForm):
+	class Meta:
+		model = Order
+		fields = '__all__'
+
+
+
 class salon_serice_form(ModelForm):
 	class Meta:
 		model = Service
+		fields = '__all__'
+
+
+class slot_form(ModelForm):
+	class Meta:
+		model = Slot
 		fields = '__all__'
 
 
@@ -35,7 +48,14 @@ class busines_resgiter_form(ModelForm):
 
 
 class CreateUserForm(UserCreationForm):
-	contact = forms.CharField(max_length=32)
 	class Meta:
 		model = User
-		fields = ['username', 'email', 'password1', 'password2','contact']
+		fields = ['username', 'email', 'password1', 'password2']
+
+
+
+
+class product_form(ModelForm):
+	class Meta:
+		model = Product
+		fields = ['salon','product_name','product_price']

@@ -1,0 +1,64 @@
+{% extends 'pages/base.html' %} {% load crispy_forms_tags %} {% block content %}
+
+<div class="container col-lg-10 pd-x-0 pd-lg-x-10 pd-xl-x-0">
+  <nav aria-label="breadcrumb">
+    <ol class="breadcrumb breadcrumb-style3 mg-b-10" style="display: inline-block;">
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item active" >MyCart</li>
+    </ol>
+  </nav>
+  <div class="card">
+    <div class="card-header bg-primary">
+      <h3 class="tx-white">MyCart</h3>
+    </div>
+    <div class="card-body">
+        {% for o in all_cart_orders %}
+        <div class="card ">
+            <div class="card-header">
+              <h3>Item No {{ forloop.counter }} </h3>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-borderless">
+                  <tbody>
+                    <table class="table table-hover mg-b-0">
+                      <thead >
+                        <tr>
+                          <th>Service Name</th>
+                          <th>Salon</th>
+                          <th>Worker</th>
+                          <th>Slot</th>
+                          <th>price</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="tx-14">{{o.service}}</td>
+                          <td class="tx-14">{{o.salon}}</td>
+                          <td class="tx-14">{{o.worker}}</td>
+                          <td class="tx-14">{{o.slot}}</td>
+                          <td class="tx-14">{{o.total}}</td>
+                        </tr>                
+                      </tbody>
+                    </table>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+
+          <div class="d-flex justify-content-between mg-t-10">
+              <h4>{{cart.address}}</h4>
+              <h4>{{cart.phone}}</h4>
+          </div>
+
+          <div class="float-right mg-t-10">
+            <a class="btn btn-success" href="{% url 'order_now' %}">Order Now</a>
+          </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
