@@ -1,24 +1,15 @@
 from .models import *
 from django.shortcuts import render
-
-# Create your views here.
 from django.shortcuts import render,redirect
-
 from django.contrib.auth.forms import UserCreationForm
-
-# Create your views here.
 from django.contrib.auth.decorators import login_required
-# from .decorators import allowed_users,admin_only
 from .forms import *
 from django.contrib.auth import authenticate, login, logout
 from django.contrib import messages
-
 from django.contrib.auth.decorators import login_required
-from .decorators import allowed_users,admin_only
-
+from .decorators import unauthenticated_user,allowed_users,admin_only
 from django.db.models import Q
-
-
+import datetime
 
 
 
@@ -27,11 +18,7 @@ def logoutuser(request):
 	logout(request)
 	return redirect('login_page')
 
-
-
-
-
-
+@unauthenticated_user
 def login_page(request):
 	if request.method =='POST':
 		username = request.POST.get('username')
@@ -60,7 +47,7 @@ def registerPage(request):
             car.phone = con
             car.address = address
             car.save()
-            return redirect('home')
+            return redirect('login_page')
         
 
     context = {'form':form}
@@ -121,6 +108,14 @@ def service_registerPage(request,id):
     context = {'form':form}
     return render(request, 'pages/workers_register_page.html', context)    
 
+
+
+def temp(request):
+    all_salons = Salon.objects.filter(status='approved')
+    context={'all_salons':all_salons}
+    return render(request,'pages/temp.html',context)
+
+
 @admin_only
 def home(request):
     all_salons = Salon.objects.filter(status='approved')
@@ -139,7 +134,8 @@ def salon_user_page(request):
     completed = Order.objects.filter(salon=salon,order_status='complete')
     all_workers = SalonWorker.objects.filter(salon=salon)
     all_products = Product.objects.filter(salon=salon)
-    context={'salon':salon,'all_workers':all_workers,'appointments':appointments,'completed':completed,'all_products':all_products}
+    all_services = Service.objects.filter(salon=salon)
+    context={'salon':salon,'all_workers':all_workers,'appointments':appointments,'completed':completed,'all_products':all_products,'all_services':all_services}
     return render(request,'pages/salon_user.html',context)
 
 
@@ -152,6 +148,40 @@ def change_order_status(request,id):
     order.save()
     return redirect('salon_user')
 
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def add_worker(request,id):
+    salon = Salon.objects.get(id=id)
+    form = salon_worker_form(initial = {'salon':salon})
+    if request.method == 'POST':
+        form = salon_worker_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/new_worker.html', context)
+
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def add_service(request,id):
+    salon = Salon.objects.get(id=id)
+    form = salon_serice_form(initial = {'salon':salon})
+    if request.method == 'POST':
+        form = salon_serice_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/new_service.html', context)
 
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['salon manager'])
@@ -222,7 +252,7 @@ def register_option(request):
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['admin'])
 def admin_home(request):
-    all_requests = Salon.objects.all()
+    all_requests = Salon.objects.filter(status='pending')
     context={'all_requests':all_requests}
     return render(request,'pages/admin_panel.html',context)
 
@@ -256,7 +286,8 @@ def new_order(request,id):
     salon_name = service.salon.shop_name
     salon = Salon.objects.get(shop_name = salon_name)
     cart = Cart.objects.get(user=request.user)
-    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price})
+    date = datetime.date.today()
+    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price,'order_date':date})
 
     if request.method == 'POST':
         form = new_order_form(request.POST)
@@ -284,8 +315,6 @@ def order_now(request):
 
 
 
-
-
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['customer'])
 def cart(request):
@@ -299,8 +328,78 @@ def cart(request):
     return render(request, 'pages/cart.html', context)
 
 
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
+def all_appointments(request):
+    user = request.user
+    cart = Cart.objects.get(user=user)
+    orders = cart.order_set.all()
+    appointments = orders.filter(order_status= "inprogress")
+    
+    context = {'appointments':appointments,'cart':cart}
+    return render(request, 'pages/appointments.html', context)
 
 
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
+def all_queries(request):
+    user = request.user
+    queries = Query.objects.filter(user=user)
+    open_queries = queries.filter(status= "open")
+    close_queries = queries.filter(status= "close")
+    
+    context = {'queries':queries,'open_queries':open_queries,'close_queries':close_queries}
+    return render(request, 'pages/all_customer_queries.html', context)
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
+def ask_question(request):
+    user = request.user
+    form = question_form(initial = {'user':user,'status':'open'})
+    if request.method == 'POST':
+        form = question_form(request.POST)
+        if form.is_valid():
+            form.save()
+            return redirect('query_page')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/question_query.html', context)
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['expert'])
+def answer_query(request,id):
+    query = Query.objects.get(id=id)
+    form = answer_form(instance=query)
+    if request.method == 'POST':
+        form = answer_form(request.POST,instance=query)
+        if form.is_valid():
+            obj=form.save()
+            obj.status = 'close'
+            obj.save()
+            return redirect('expert_home')
+        
+
+    context = {'form':form,'query':query}
+    return render(request, 'pages/answer_page.html', context)
+
+
+
+
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['expert'])
+def expert_home(request):
+    all_queries = Query.objects.filter(status='open')   
+    context = {'all_queries':all_queries}
+    return render(request, 'pages/expert_home.html', context)
 
 
 # def blog_view(request,id):

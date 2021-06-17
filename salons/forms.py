@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import Order, Page, Product,Salon,SalonWorker,Service, Slot
+from .models import Order, Page, Product, Query,Salon,SalonWorker,Service, Slot
 
 
 class new_salon_form(ModelForm):
@@ -26,6 +26,17 @@ class new_order_form(ModelForm):
 		model = Order
 		fields = '__all__'
 
+
+class question_form(ModelForm):
+	class Meta:
+		model = Query
+		fields = ['user','title','question','status']
+
+
+class answer_form(ModelForm):
+	class Meta:
+		model = Query
+		fields = ['answer']
 
 
 class salon_serice_form(ModelForm):

@@ -9,7 +9,14 @@
 
   <div class="navbar-right">
     {% if request.user|has_group:"customer" %}
-    <a href="{% url 'cart' %}"><i data-feather="shopping-cart"></i></a>
+    <a href="{% url 'query_page' %}" class="tx-primary">Ask Expert</a>
+    <a href="{% url 'appointments' %}" class="tx-primary mg-l-5"
+      >My Appointments</a
+    >
+    <a href="{% url 'cart' %}" class="mg-l-5"
+      ><i data-feather="shopping-cart"></i
+    ></a>
+
     {% endif %}
 
     <div class="dropdown dropdown-profile">

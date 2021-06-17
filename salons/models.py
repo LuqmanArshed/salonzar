@@ -130,6 +130,7 @@ class Order(models.Model):
     service = models.ForeignKey(Service,null=True,blank=True,on_delete=models.CASCADE)
     worker = models.ForeignKey(SalonWorker,null=True,blank=True,on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot,null=True,blank=True,on_delete=models.CASCADE)
+    order_date = models.DateField(null=True,blank=True)
     order_status = models.CharField(max_length=200,null=True,blank=True,choices=order_choices)
     total = models.IntegerField(null=True,blank=True)
 
@@ -145,3 +146,19 @@ class Product(models.Model):
     def __str__(self):
         return self.product_name
 
+
+
+class Query(models.Model):
+    OPEN = 'open'
+    CLOSE = 'close'
+    query_choices = [
+        (OPEN,'open'),
+        (CLOSE,'close')
+    ]
+    user = models.CharField(max_length=200,null=True,blank=True)
+    title = models.CharField(max_length=200,null=True,blank=True)
+    question = models.TextField(max_length=500,null=True,blank=True)
+    answer = models.TextField(max_length=500,null=True,blank=True)
+    status = models.CharField(max_length=50,choices=query_choices,null=True,blank=True)
+    def __str__(self):
+        return self.title
