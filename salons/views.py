@@ -130,12 +130,14 @@ def salon_user_page(request):
     user = request.user
     print(user)
     salon = Salon.objects.get(user=user)
+    approvals = Order.objects.filter(salon=salon,order_status='pending')
     appointments = Order.objects.filter(salon=salon,order_status='inprogress')
     completed = Order.objects.filter(salon=salon,order_status='complete')
     all_workers = SalonWorker.objects.filter(salon=salon)
     all_products = Product.objects.filter(salon=salon)
     all_services = Service.objects.filter(salon=salon)
-    context={'salon':salon,'all_workers':all_workers,'appointments':appointments,'completed':completed,'all_products':all_products,'all_services':all_services}
+    all_slots = Slot.objects.filter(salon=salon)
+    context={'approvals':approvals,'all_slots':all_slots,'salon':salon,'all_workers':all_workers,'appointments':appointments,'completed':completed,'all_products':all_products,'all_services':all_services}
     return render(request,'pages/salon_user.html',context)
 
 
@@ -186,8 +188,8 @@ def add_service(request,id):
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['salon manager'])
 def add_slot(request,id):
-    worker = SalonWorker.objects.get(id=id)
-    form = slot_form(initial = {'worker':worker})
+    salon = Salon.objects.get(id=id)
+    form = slot_form(initial = {'salon':salon})
     if request.method == 'POST':
         form = slot_form(request.POST)
         if form.is_valid():
@@ -218,6 +220,27 @@ def add_new_product(request,id):
 
     context = {'form':form}
     return render(request, 'pages/new_product.html', context)
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def assign_worker(request,id):
+    order = Order.objects.get(id=id)
+    form = assign_worker_order(request.POST,instance=order)
+    form.getworkers(order.salon.id)
+    if request.method == 'POST':
+        if form.is_valid():
+            obj=form.save()
+            obj.order_status = 'inprogress'
+            obj.save()
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/assign_worker.html', context)
+
+
 
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['salon manager'])
@@ -287,8 +310,8 @@ def new_order(request,id):
     salon = Salon.objects.get(shop_name = salon_name)
     cart = Cart.objects.get(user=request.user)
     date = datetime.date.today()
-    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price,'order_date':date})
-
+    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price,'order_date':date,'order_status':'pending'})
+    form.getslots(salon.id)
     if request.method == 'POST':
         form = new_order_form(request.POST)
         if form.is_valid():

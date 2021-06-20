@@ -7,6 +7,12 @@ from django.contrib.auth.models import User
 from django import forms
 
 from .models import Order, Page, Product, Query,Salon,SalonWorker,Service, Slot
+from crispy_forms.helper import FormHelper
+from crispy_forms.layout import Layout,Field
+from crispy_forms.bootstrap import AppendedText, PrependedText
+
+from django.forms import ClearableFileInput
+
 
 
 class new_salon_form(ModelForm):
@@ -21,10 +27,35 @@ class salon_worker_form(ModelForm):
 		fields = '__all__'
 
 
-class new_order_form(ModelForm):
+class new_order_form(forms.ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(new_order_form, self).__init__(*args, **kwargs)
+		self.helper = FormHelper(self)
+		self.helper.form_show_labels = False
+		self.fields['slot'].required = True
+
+
+	def getslots(self,id):
+		salon = Salon.objects.get(id=id)
+		self.fields['slot'].queryset = Slot.objects.filter(salon=salon)
+
+
 	class Meta:
 		model = Order
-		fields = '__all__'
+		fields = ['cart','salon','service','type','slot','order_date','order_status','total']
+
+
+
+class assign_worker_order(ModelForm):
+
+	def getworkers(self,id):
+		salon = Salon.objects.get(id=id)
+		self.fields['worker'].queryset = SalonWorker.objects.filter(salon=salon)
+	class Meta:
+		model = Order
+		fields = ['worker']
+
+
 
 
 class question_form(ModelForm):

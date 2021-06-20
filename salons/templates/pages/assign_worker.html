@@ -1,0 +1,22 @@
+{% extends 'pages/base.html' %}{% load crispy_forms_tags %}{% block content %}
+<div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 mg-t-40">
+  <div class="card">
+    <div class="card-header btn btn-primary">
+      <h3>Add Slot</h3>
+    </div>
+    <div class="card-body">
+      <form action="" method="POST" enctype="multipart/form-data">
+        {% csrf_token %} {{form | crispy}}
+
+        <div class="float-right">
+          <a class="btn btn-danger" href="{% url 'salon_user'%}">cancel</a>
+          <button class="btn btn-primary" type="submit">submit</button>
+        </div>
+      </form>
+    </div>
+  </div>
+</div>
+
+<!-- content -->
+
+{% endblock %}

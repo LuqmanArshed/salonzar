@@ -32,6 +32,7 @@ urlpatterns = [
      path('add_new_service/<int:id>', views.add_service, name='new_service'), 
      path('add_product/<int:id>', views.add_new_product, name='add_product'),
      path('worker_slots/<int:id>', views.worker_slots, name='worker_slots'), 
+     path('assign_worker/<int:id>', views.assign_worker, name='assign_worker'), 
 
 
       path('new_order/<int:id>', views.new_order, name='order'),

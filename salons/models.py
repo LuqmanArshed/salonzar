@@ -89,7 +89,7 @@ class Slot(models.Model):
         (BOOKED,'booked'),
         (AVAILABLE,'available')
     ]
-    worker = models.ForeignKey(SalonWorker,null=True,blank=True,on_delete=models.CASCADE)
+    salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
     slot_start_time = models.CharField(max_length=200,null=True)
     slot_end_time = models.CharField(max_length=200,null=True)
     slot_status = models.CharField(max_length=200,null=True,choices=slot_choices)
@@ -120,16 +120,25 @@ class Cart(models.Model):
 
 class Order(models.Model):
     INPROGRESS = 'inprogress'
+    PENDING = 'pending'
     COMPLETE = 'complete'
+    SHOP = 'shop'
+    HOME = 'home'
     order_choices = [
         (INPROGRESS,'inprogress'),
+        (PENDING,'pending'),
         (COMPLETE,'complete')
+    ]
+    type_choices = [
+        (SHOP,'shop'),
+        (HOME,'home')
     ]
     cart = models.ForeignKey(Cart,null=True,blank=True,on_delete=models.CASCADE)
     salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
     service = models.ForeignKey(Service,null=True,blank=True,on_delete=models.CASCADE)
     worker = models.ForeignKey(SalonWorker,null=True,blank=True,on_delete=models.CASCADE)
     slot = models.ForeignKey(Slot,null=True,blank=True,on_delete=models.CASCADE)
+    type = models.CharField(max_length=200,null=True,blank=True,choices=type_choices)
     order_date = models.DateField(null=True,blank=True)
     order_status = models.CharField(max_length=200,null=True,blank=True,choices=order_choices)
     total = models.IntegerField(null=True,blank=True)

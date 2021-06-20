@@ -6,7 +6,60 @@
     </div>
     <div class="card-body">
       <form action="" method="POST" enctype="multipart/form-data">
-        {% csrf_token %} {{form | crispy}}
+        {% csrf_token %}
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label style="font-weight: normal !important"
+              >cart <span class="tx-danger">*</span></label
+            >
+            {{ form.cart|as_crispy_field }}
+          </div>
+          <div class="form-group col-md-3 mb-0">
+            <label style="font-weight: normal !important"
+              >salon <span class="tx-danger">*</span></label
+            >
+            <div id="datepicker1">{{ form.salon|as_crispy_field }}</div>
+          </div>
+          <div class="form-group col-md-3 mb-0">
+            <label style="font-weight: normal !important"
+              >Service<span class="tx-danger">*</span></label
+            >
+            {{ form.service|as_crispy_field }}
+          </div>
+          <div class="form-group col-md-3 mb-0">
+            <label style="font-weight: normal !important"
+              >Service Type<span class="tx-danger">*</span></label
+            >
+            {{ form.type|as_crispy_field }}
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group col-md-3">
+            <label style="font-weight: normal !important"
+              >slot <span class="tx-danger">*</span></label
+            >
+            {{ form.slot|as_crispy_field }}
+          </div>
+          <div class="form-group col-md-3 mb-0">
+            <label style="font-weight: normal !important"
+              >order date <span class="tx-danger">*</span></label
+            >
+            <div id="datepicker1">{{ form.order_date|as_crispy_field }}</div>
+          </div>
+          <div class="form-group col-md-3 mb-0">
+            <label style="font-weight: normal !important"
+              >order status <span class="tx-danger">*</span></label
+            >
+            {{ form.order_status|as_crispy_field }}
+          </div>
+          <div class="form-group col-md-3 mb-0">
+            <label style="font-weight: normal !important"
+              >total <span class="tx-danger">*</span></label
+            >
+            {{ form.total|as_crispy_field }}
+          </div>
+        </div>
 
         <div class="float-right">
           <a class="btn btn-danger" href="{% url 'home'%}">cancel</a>
