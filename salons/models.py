@@ -59,7 +59,7 @@ class Salon(models.Model):
     email = models.CharField(max_length=200, null=True)
     no_of_workers = models.IntegerField(null=True)
     serivice_type = models.CharField(max_length=100,null=True,choices=service_category)
-    address = models.TextField(null=True)
+    address = models.CharField(null=True,max_length=100,blank=True)
     status = models.CharField(max_length=100,null=True,choices=status_choices)
     thumbnail = models.ImageField(upload_to='SalonImages/',null=True,blank=True)    
     def __str__(self):
@@ -122,12 +122,14 @@ class Order(models.Model):
     INPROGRESS = 'inprogress'
     PENDING = 'pending'
     COMPLETE = 'complete'
+    CARTPENDING = 'cartpending'
     SHOP = 'shop'
     HOME = 'home'
     order_choices = [
         (INPROGRESS,'inprogress'),
         (PENDING,'pending'),
-        (COMPLETE,'complete')
+        (COMPLETE,'complete'),
+        (CARTPENDING,'cartpending')
     ]
     type_choices = [
         (SHOP,'shop'),
@@ -141,6 +143,7 @@ class Order(models.Model):
     type = models.CharField(max_length=200,null=True,blank=True,choices=type_choices)
     order_date = models.DateField(null=True,blank=True)
     order_status = models.CharField(max_length=200,null=True,blank=True,choices=order_choices)
+    order_time = models.DateTimeField(null=True,blank=True)
     total = models.IntegerField(null=True,blank=True)
 
 
@@ -151,10 +154,41 @@ class Product(models.Model):
     salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
     product_name = models.CharField(max_length=200,null=True,blank=True)
     product_price = models.IntegerField(null=True,blank=True)
+    product_stock = models.IntegerField(null=True,blank=True)
     product_image= models.ImageField(upload_to='Products/',null=True,blank=True)
     def __str__(self):
         return self.product_name
 
+
+
+
+
+
+class ProductOrder(models.Model):
+    INPROGRESS = 'inprogress'
+    PENDING = 'pending'
+    COMPLETE = 'complete'
+    SHOP = 'shop'
+    HOME = 'home'
+    order_choices = [
+        (INPROGRESS,'inprogress'),
+        (PENDING,'pending'),
+        (COMPLETE,'complete'),
+        
+    ]
+    type_choices = [
+        (SHOP,'shop'),
+        (HOME,'home')
+    ]
+    cart = models.ForeignKey(Cart,null=True,blank=True,on_delete=models.CASCADE)
+    salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
+    product = models.ForeignKey(Product,null=True,blank=True,on_delete=models.CASCADE)
+    quantity = models.IntegerField(null=True,blank=True)
+    type = models.CharField(max_length=200,null=True,blank=True,choices=type_choices)
+    order_date = models.DateField(null=True,blank=True)
+    order_status = models.CharField(max_length=200,null=True,blank=True,choices=order_choices)
+    order_time = models.DateTimeField(null=True,blank=True)
+    total = models.IntegerField(null=True,blank=True)
 
 
 class Query(models.Model):

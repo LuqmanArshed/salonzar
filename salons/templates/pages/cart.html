@@ -48,6 +48,43 @@
           </div>
           {% endfor %}
 
+
+          {% for p in all_product_orders %}
+        <div class="card ">
+            <div class="card-header">
+              <h3>Item No {{ forloop.counter }} </h3>
+            </div>
+            <div class="card-body">
+              <div class="table-responsive">
+                <table class="table table-borderless">
+                  <tbody>
+                    <table class="table table-hover mg-b-0">
+                      <thead >
+                        <tr>
+                          <th>Product Name</th>
+                          <th>price</th>
+                          <th>Salon</th>
+                          <th>Quantity</th>
+                          
+                        </tr>
+                      </thead>
+                      <tbody>
+                        <tr>
+                          <td class="tx-14">{{p.product}}</td>
+                          <td class="tx-14">{{p.total}}</td>
+                          <td class="tx-14">{{p.salon}}</td>
+                          <td class="tx-14">{{p.quantity}}</td>
+                        </tr>                
+                      </tbody>
+                    </table>
+                  </tbody>
+                </table>
+              </div>
+            </div>
+          </div>
+          {% endfor %}
+          
+
           <div class="d-flex justify-content-between mg-t-10">
               <h4>{{cart.address}}</h4>
               <h4>{{cart.phone}}</h4>
@@ -62,3 +99,8 @@
 </div>
 
 {% endblock %}
+
+
+
+
+

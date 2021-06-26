@@ -1,8 +1,22 @@
 {% extends 'pages/base.html' %} {% load static %} {% block content %}
 
 <div class="container col-lg-11">
+  {% if messages %} {% for message in messages %}
+  <div
+    class="alert alert-success"
+    role="alert"
+    id="msg"
+    style="text-align: center"
+  >
+    {{ message }}
+  </div>
+  {% endfor %} {% endif %}
   <div data-label="Example" class="df-example">
-    <div id="carouselExample3" class="carousel slide" data-ride="carousel">
+    <div
+      id="carouselExample3"
+      class="carousel slide mg-t-0"
+      data-ride="carousel"
+    >
       <ol class="carousel-indicators">
         <li
           data-target="#carouselExample3"
@@ -12,7 +26,7 @@
         <li data-target="#carouselExample3" data-slide-to="1"></li>
         <li data-target="#carouselExample3" data-slide-to="2"></li>
       </ol>
-      <div class="carousel-inner">
+      <div class="carousel-inner ht-400">
         <div class="carousel-item active">
           <img src="/static/images/beard.jpg" class="d-block w-100" alt="..." />
           <div class="carousel-caption d-none d-md-block">
@@ -71,13 +85,15 @@
 <div class="container col-lg-11">
   <div
     class="
-      d-sm-flex
+      text-center
       align-items-center
       justify-content-between
-      mg-t-20 mg-b-10 mg-lg-b-25 mg-xl-b-30
+      mg-t-40 mg-b-10 mg-lg-b-25 mg-xl-b-30
     "
   >
-    <h1>ALL Salons</h1>
+    <h1 class="tx-orange">
+      <b>ALL Salons</b>
+    </h1>
   </div>
   <div class="col-lg-12 col-xl-12 mg-t-10">
     <div data-label="Example" class="df-example">
@@ -112,6 +128,63 @@
     </div>
     <!-- df-example -->
   </div>
+</div>
+
+<div class="container col-lg-11 mg-t-10">
+  <div
+    class="
+      text-center
+      align-items-center
+      justify-content-between
+      mg-t-40 mg-b-10 mg-lg-b-25 mg-xl-b-30
+    "
+  >
+    <h1 class="tx-orange">
+      <b>ALL Products</b>
+    </h1>
+  </div>
+  <div class="col-lg-12 col-xl-12 mg-t-10">
+    <div data-label="Example" class="df-example">
+      <div class="row">
+        {% for p in all_products %}
+        <div class="col-sm-4">
+          <div
+            class="bg-image hover-overlay ripple shadow-1-strong rounded"
+            data-mdb-ripple-color="light"
+          >
+            <div class="card baseBlock">
+              <a href=""
+                ><img
+                  src="{{p.product_image.url}}"
+                  class="card-img-top"
+                  alt=""
+                  data-holder-rendered="true"
+              /></a>
+
+              <div class="card-body">
+                <div
+                  class="
+                    d-flex
+                    flex-row
+                    align-items-center
+                    justify-content-between
+                  "
+                >
+                  <h4 class="card-text tx-info"><b>{{p.product_name}}</b></h4>
+                  <h4 class="card-text tx-danger">
+                    <b>RS:{{p.product_price}}</b>
+                  </h4>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+        {% endfor %}
+      </div>
+      <!-- row -->
+    </div>
+  </div>
+  <!-- df-example -->
 </div>
 <!-- container -->
 

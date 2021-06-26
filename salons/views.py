@@ -10,6 +10,7 @@ from django.contrib.auth.decorators import login_required
 from .decorators import unauthenticated_user,allowed_users,admin_only
 from django.db.models import Q
 import datetime
+import time
 
 
 
@@ -55,7 +56,7 @@ def registerPage(request):
 
 
 def business_registerPage(request):
-    form = busines_resgiter_form(initial={'status':'pending'})
+    form = busines_resgiter_form(initial={'status':'Pending'})
     if request.method == 'POST':
         form = busines_resgiter_form(request.POST,request.FILES)
         files = request.FILES.getlist('thumbnail')
@@ -106,7 +107,7 @@ def service_registerPage(request,id):
         
 
     context = {'form':form}
-    return render(request, 'pages/workers_register_page.html', context)    
+    return render(request, 'pages/service_register_page.html', context)    
 
 
 
@@ -119,7 +120,8 @@ def temp(request):
 @admin_only
 def home(request):
     all_salons = Salon.objects.filter(status='approved')
-    context={'all_salons':all_salons}
+    all_products = Product.objects.all()
+    context={'all_salons':all_salons,'all_products':all_products}
     return render(request,'pages/home.html',context)
 
 
@@ -131,14 +133,43 @@ def salon_user_page(request):
     print(user)
     salon = Salon.objects.get(user=user)
     approvals = Order.objects.filter(salon=salon,order_status='pending')
+    total_approvals= Order.objects.filter(salon=salon,order_status='pending').count()
+    appointments = Order.objects.filter(salon=salon,order_status='inprogress')
+    p_orders = ProductOrder.objects.filter(salon=salon,order_status='inprogress')
+    total_p_orders = ProductOrder.objects.filter(salon=salon,order_status='inprogress').count()
+    completed = Order.objects.filter(salon=salon,order_status='complete')
+    all_workers = SalonWorker.objects.filter(salon=salon)
+    all_products = Product.objects.filter(salon=salon)
+    all_services = Service.objects.filter(salon=salon)
+    all_slots = Slot.objects.filter(salon=salon)
+    context={'p_orders':p_orders,'approvals':approvals,'all_slots':all_slots,'salon':salon,'all_workers':all_workers,
+    'appointments':appointments,'completed':completed,'all_products':all_products,
+    'all_services':all_services,'total_approvals':total_approvals,'total_p_orders':total_p_orders}
+    return render(request,'pages/salon_user.html',context)
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def salon_user_setting(request):
+    user = request.user
+    print(user)
+    salon = Salon.objects.get(user=user)
+    approvals = Order.objects.filter(salon=salon,order_status='pending')
     appointments = Order.objects.filter(salon=salon,order_status='inprogress')
     completed = Order.objects.filter(salon=salon,order_status='complete')
     all_workers = SalonWorker.objects.filter(salon=salon)
     all_products = Product.objects.filter(salon=salon)
     all_services = Service.objects.filter(salon=salon)
     all_slots = Slot.objects.filter(salon=salon)
-    context={'approvals':approvals,'all_slots':all_slots,'salon':salon,'all_workers':all_workers,'appointments':appointments,'completed':completed,'all_products':all_products,'all_services':all_services}
-    return render(request,'pages/salon_user.html',context)
+    pc_orders = ProductOrder.objects.filter(salon=salon,order_status='complete')
+    context={'pc_orders':pc_orders,'approvals':approvals,'all_slots':all_slots,'salon':salon,'all_workers':all_workers,'appointments':appointments,'completed':completed,'all_products':all_products,'all_services':all_services}
+    return render(request,'pages/salonuser_settings.html',context)
+
+
+
+
+
 
 
 
@@ -146,6 +177,19 @@ def salon_user_page(request):
 @allowed_users(allowed_roles=['salon manager'])
 def change_order_status(request,id):
     order = Order.objects.get(id=id)
+    order.order_status = 'complete'
+    order.save()
+    return redirect('salon_user')
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def product_order_status(request,id):
+    order = ProductOrder.objects.get(id=id)
+    product = Product.objects.get(id=order.product.id)
+    product.product_stock = product.product_stock - order.quantity
+    product.save()
     order.order_status = 'complete'
     order.save()
     return redirect('salon_user')
@@ -310,13 +354,15 @@ def new_order(request,id):
     salon = Salon.objects.get(shop_name = salon_name)
     cart = Cart.objects.get(user=request.user)
     date = datetime.date.today()
-    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price,'order_date':date,'order_status':'pending'})
+    time = datetime.datetime.now().time()
+    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price,'order_date':date,'order_status':'cartpending'})
     form.getslots(salon.id)
     if request.method == 'POST':
         form = new_order_form(request.POST)
         if form.is_valid():
             form.save()
-            return redirect('cart')
+            messages.success(request,'Service has been added to cart ')
+            return redirect('salon_page',salon.id)
         
 
     context = {'form':form}
@@ -326,14 +372,76 @@ def new_order(request,id):
 
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['customer'])
+def new_product_order(request,id):
+    product = Product.objects.get(id=id)
+    salon_name = product.salon.shop_name
+    salon = Salon.objects.get(shop_name = salon_name)
+    if product.product_stock == 0:
+        messages.warning(request,'Product is not in-stock')
+        return redirect('salon_page',salon.id)
+
+    cart = Cart.objects.get(user=request.user)
+    date = datetime.date.today()
+    time = datetime.datetime.now().time()
+    form = product_order_form(initial = {'product':product,'salon':salon,'cart':cart,'order_date':date,'order_status':'pending'})
+    if request.method == 'POST':
+        form = product_order_form(request.POST)
+        if form.is_valid():
+            obj=form.save()
+            quantities = form.cleaned_data['quantity']
+            obj.total = product.product_price * quantities
+            obj.save()
+            messages.success(request,'Product has been added to cart ')
+            return redirect('salon_page',salon.id)
+        
+
+    context = {'form':form}
+    return render(request, 'pages/product_order.html', context) 
+
+
+
+
+
+
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
 def order_now(request):
     user = request.user
     cart = Cart.objects.get(user=user)
+    time = datetime.datetime.now()
     all_cart_orders = cart.order_set.all()
+    all_product_orders = cart.productorder_set.all()
     for o in all_cart_orders:
-        o.order_status = "inprogress"
+        o.order_status = "pending"
+        o.order_time = time
         o.save()
+
+    for p in all_product_orders:
+        p.order_status = "inprogress"
+        p.order_time = time
+        p.save()    
     return redirect('home')
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
+def cancel_order(request,id):
+    order = Order.objects.get(id=id)
+    current_time = datetime.datetime.now()
+    order_time = order.order_time
+    cancel_time = current_time.total_seconds() - order_time.total_seconds()
+    if cancel_time < 3600:
+        order.delete()
+        messages.danger(request, 'order has been cancelled')
+        return redirect('home')
+    else:
+        messages.danger(request, 'order cannot be cancelled')
+        return redirect('home')
+
 
 
 
@@ -344,10 +452,12 @@ def cart(request):
     user = request.user
     cart = Cart.objects.get(user=user)
     orders = cart.order_set.all()
-    all_cart_orders = orders.filter(~Q(order_status= "inprogress"))
+    product_orders = cart.productorder_set.all()
+    all_cart_orders = orders.filter(order_status= "cartpending")
+    all_product_orders = product_orders.filter(~Q(order_status= "inprogress"))
 
     
-    context = {'all_cart_orders':all_cart_orders,'cart':cart}
+    context = {'all_cart_orders':all_cart_orders,'cart':cart,'all_product_orders':all_product_orders}
     return render(request, 'pages/cart.html', context)
 
 

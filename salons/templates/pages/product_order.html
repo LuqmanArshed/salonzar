@@ -1,8 +1,8 @@
 {% extends 'pages/base.html' %}{% load crispy_forms_tags %}{% block content %}
-<div class="container col-lg-8 mg-t-40">
+<div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 mg-t-40">
   <div class="card">
     <div class="card-header bg-teal">
-      <h3>Order form</h3>
+      <h3>Product Order form</h3>
     </div>
     <div class="card-body">
       <form action="" method="POST" enctype="multipart/form-data">
@@ -10,28 +10,22 @@
         <div class="form-row">
           <div class="form-group col-md-3 mb-0">
             <label style="font-weight: normal !important"
-              >Service<span class="tx-danger">*</span></label
+              >Product<span class="tx-danger">*</span></label
             >
-            {{ form.service|as_crispy_field }}
-          </div>
-          <div class="form-group col-md-3 mb-0">
-            <label style="font-weight: normal !important"
-              >Service Type<span class="tx-danger">*</span></label
-            >
-            {{ form.type|as_crispy_field }}
-          </div>
-          <div class="form-group col-md-3">
-            <label style="font-weight: normal !important"
-              >slot <span class="tx-danger">*</span></label
-            >
-            {{ form.slot|as_crispy_field }}
+            {{ form.product|as_crispy_field }}
           </div>
 
+          <div class="form-group col-md-3">
+            <label style="font-weight: normal !important"
+              >Quantity <span class="tx-danger">*</span></label
+            >
+            {{ form.quantity|as_crispy_field }}
+          </div>
           <div class="form-group col-md-3 mb-0">
             <label style="font-weight: normal !important"
-              >total <span class="tx-danger">*</span></label
+              >Delivery Type<span class="tx-danger">*</span></label
             >
-            {{ form.total|as_crispy_field }}
+            {{ form.type|as_crispy_field }}
           </div>
         </div>
 

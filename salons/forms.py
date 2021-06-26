@@ -6,7 +6,7 @@ from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth.models import User
 from django import forms
 
-from .models import Order, Page, Product, Query,Salon,SalonWorker,Service, Slot
+from .models import Order, Page, Product, ProductOrder, Query,Salon,SalonWorker,Service, Slot
 from crispy_forms.helper import FormHelper
 from crispy_forms.layout import Layout,Field
 from crispy_forms.bootstrap import AppendedText, PrependedText
@@ -43,6 +43,8 @@ class new_order_form(forms.ModelForm):
 	class Meta:
 		model = Order
 		fields = ['cart','salon','service','type','slot','order_date','order_status','total']
+		widgets = {'cart':forms.HiddenInput(),'salon':forms.HiddenInput(),
+		'order_date':forms.HiddenInput(),'order_status':forms.HiddenInput(),'order_time':forms.HiddenInput()}
 
 
 
@@ -83,10 +85,15 @@ class slot_form(ModelForm):
 
 
 class busines_resgiter_form(ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(busines_resgiter_form, self).__init__(*args, **kwargs)
+		self.helper = FormHelper(self)
+		self.helper.form_show_labels = False
+		
 	class Meta:
 		model = Salon
 		fields = ['shop_name','phone','email','no_of_workers','serivice_type','address','status']
-		widgets = {'status': forms.HiddenInput()}
+		
 
 
 class CreateUserForm(UserCreationForm):
@@ -101,3 +108,16 @@ class product_form(ModelForm):
 	class Meta:
 		model = Product
 		fields = ['salon','product_name','product_price']
+
+
+class product_order_form(ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(product_order_form, self).__init__(*args, **kwargs)
+		self.helper = FormHelper(self)
+		self.helper.form_show_labels = False
+
+	class Meta:
+		model = ProductOrder
+		fields = ['cart','salon','product','quantity','type','order_date','order_status','order_time']
+		widgets = {'status': forms.HiddenInput(),'cart':forms.HiddenInput(),'salon':forms.HiddenInput(),
+		'order_date':forms.HiddenInput(),'order_status':forms.HiddenInput(),'order_time':forms.HiddenInput()}

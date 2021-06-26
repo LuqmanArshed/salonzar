@@ -33,9 +33,14 @@
     <link rel="stylesheet" href="{% static '/css/dashforge.auth.css' %}" />
   </head>
   <body>
-    <div class="container pd-x-0 pd-lg-x-10 pd-xl-x-0 mg-t-40">
+    <div class="container col-lg-11 mg-t-60">
+      <div class="tx-center" >
+        <h3 class="tx-info">Plz add workers and services which are provided in your salon</h3>
+      </div>
+      <div class="row">
+       <div class="col-lg-6">
       <div class="card">
-        <div class="card-header">
+        <div class="card-header bg-orange">
           <h3>Added Services</h3>
           <div class="float-right">
             <a
@@ -71,9 +76,10 @@
         </div>
         <!-- card-body -->
       </div>
-
-      <div class="card mg-t-15">
-        <div class="card-header">
+    </div> 
+    <div class="col-lg-6">
+      <div class="card">
+        <div class="card-header bg-teal">
           <h3>Added Workers</h3>
           <div class="float-right">
             <a
@@ -106,15 +112,42 @@
             </table>
           </div>
           <!-- table-responsive -->
-          <div class="mg-t-15 float-right">
-            <a class="btn btn-primary" href="{% url 'home'%}"
-              >Finish Register</a
-            >
-          </div>
+          
         </div>
         <!-- card-body -->
       </div>
     </div>
+    </div>
+   
+  </div>
+
+    <div class="container col-lg-11 mg-t-40">
+      <div class="card mg-t-15">
+        <div class="card-header bg-pink">
+          <h3>Important Info</h3>
+        </div>
+        <div class="card-body">
+          <p>
+            After you click on finish registration, our admins will review your
+            submitted business account request.If your request will meet our
+            acceptance criteria, we will send you the login credentials on the
+            email you provide in registration. Oterwise you will be notified
+            with rejection resaons.Thankyou
+          </p>
+          <!-- table-responsive -->
+        </div>
+        <!-- card-body -->
+      </div>
+        <!-- card-body -->
+      </div>
+    </div>
+    <div class="col-lg-11 mg-t-15">
+    <div class="float-right">
+      <a class="btn btn-success" href="{% url 'temp'%}"
+        >Finish Register</a
+      >
+    </div>
+  </div>
 
     <!-- content -->
   </body>

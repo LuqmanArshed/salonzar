@@ -32,6 +32,7 @@
                     <th><b>Worker</b></th>
                     <th><b>Contact</b></th>
                     <th><b>Order Status</b></th>
+                    <th><b>Cancel order</b></th>
                      
                   </tr>
                 </thead>
@@ -46,6 +47,7 @@
                    <td class="tx-14">{{a.worker.worker_name}}</td>
                    <td class="tx-14">{{a.worker.worker_contact}}</td>
                    <td class="tx-14">{{a.order_status}}</td>
+                   <td class="tx-14"><a href="{% url 'cancel' a.id %}" class="btn btn-xs btn-primary">cancel</a></td>
                    
                  </tr>
                  {% endfor %}

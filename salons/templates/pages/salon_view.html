@@ -1,6 +1,26 @@
 {% extends 'pages/base.html' %} {% load static %} {% block content %}
 
 <div class="container col-lg-11">
+  <nav aria-label="breadcrumb">
+    <ol
+      class="breadcrumb breadcrumb-style3 mg-b-10"
+      style="display: inline-block"
+    >
+      <li class="breadcrumb-item"><a href="{% url 'home' %}">Home</a></li>
+      <li class="breadcrumb-item active">{{salon.shop_name}}</li>
+    </ol>
+  </nav>
+  {% if messages %} {% for message in messages %}
+  <div
+    class="alert alert-success"
+    id="msg"
+    role="alert"
+    style="text-align: center"
+  >
+    {{ message }}
+  </div>
+  {% endfor %} {% endif %}
+
   <div class="tx-36 tx-orange text-center"><b>{{salon.shop_name}}</b></div>
   <div data-label="Example" class="df-example">
     <div id="carouselExample3" class="carousel slide" data-ride="carousel">
@@ -13,7 +33,7 @@
         <li data-target="#carouselExample3" data-slide-to="1"></li>
         <li data-target="#carouselExample3" data-slide-to="2"></li>
       </ol>
-      <div class="carousel-inner ht-500">
+      <div class="carousel-inner ht-400">
         <div class="carousel-item active">
           <img
             src="{% static '/images/salon_pic.jpeg' %}"
@@ -161,7 +181,10 @@
                     <b>RS:{{p.product_price}}</b>
                   </h4>
                 </div>
-                <a href="" class="btn btn-sm btn-outline-success float-right">
+                <a
+                  href="{% url 'product_order' p.id %}"
+                  class="btn btn-sm btn-outline-success float-right"
+                >
                   Add to cart</a
                 >
               </div>
@@ -176,24 +199,12 @@
   </div>
 </div>
 <!-- container -->
-
 <script>
-  $(function () {
-    "use strict";
-
-    $("#t1").DataTable({
-      language: {
-        searchPlaceholder: "Search...",
-        sSearch: "",
-        lengthMenu: "_MENU_ items/page",
-      },
-    });
-
-    // Select2
-    $(".dataTables_length select").select2({
-      minimumResultsForSearch: Infinity,
-    });
-  });
+  setTimeout(function () {
+    if ($("#msg").length > 0) {
+      $("#msg").remove();
+    }
+  }, 4000);
 </script>
 
 {% endblock %}
