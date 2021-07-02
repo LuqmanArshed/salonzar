@@ -106,6 +106,7 @@ class Service(models.Model):
     salon = models.ForeignKey(Salon,null=True,blank=True,on_delete=models.CASCADE)
     service_name = models.CharField(max_length=200,null=True)
     price = models.IntegerField(null=True)
+    discount = models.IntegerField(null=True,blank=True)
     def __str__(self):
         return self.service_name
 
@@ -155,6 +156,7 @@ class Product(models.Model):
     product_name = models.CharField(max_length=200,null=True,blank=True)
     product_price = models.IntegerField(null=True,blank=True)
     product_stock = models.IntegerField(null=True,blank=True)
+    discount = models.IntegerField(null=True,blank=True)
     product_image= models.ImageField(upload_to='Products/',null=True,blank=True)
     def __str__(self):
         return self.product_name
@@ -168,12 +170,14 @@ class ProductOrder(models.Model):
     INPROGRESS = 'inprogress'
     PENDING = 'pending'
     COMPLETE = 'complete'
+    REJECT = 'reject'
     SHOP = 'shop'
     HOME = 'home'
     order_choices = [
         (INPROGRESS,'inprogress'),
         (PENDING,'pending'),
         (COMPLETE,'complete'),
+        (REJECT,'reject')
         
     ]
     type_choices = [

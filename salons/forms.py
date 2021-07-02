@@ -33,6 +33,8 @@ class new_order_form(forms.ModelForm):
 		self.helper = FormHelper(self)
 		self.helper.form_show_labels = False
 		self.fields['slot'].required = True
+		self.fields['total'].widget.attrs['readonly'] = True
+		self.fields['service'].widget.attrs['readonly'] = True
 
 
 	def getslots(self,id):
@@ -82,7 +84,13 @@ class slot_form(ModelForm):
 	class Meta:
 		model = Slot
 		fields = '__all__'
+		
 
+class edit_slot_form(ModelForm):
+	class Meta:
+		model = Slot
+		fields = ['slot_start_time','slot_end_time']
+		
 
 class busines_resgiter_form(ModelForm):
 	def __init__(self, *args, **kwargs):
@@ -107,7 +115,7 @@ class CreateUserForm(UserCreationForm):
 class product_form(ModelForm):
 	class Meta:
 		model = Product
-		fields = ['salon','product_name','product_price']
+		fields = ['salon','product_name','product_price','product_stock','discount']
 
 
 class product_order_form(ModelForm):
@@ -115,9 +123,22 @@ class product_order_form(ModelForm):
 		super(product_order_form, self).__init__(*args, **kwargs)
 		self.helper = FormHelper(self)
 		self.helper.form_show_labels = False
+		self.fields['product'].widget.attrs['readonly'] = True
 
 	class Meta:
 		model = ProductOrder
 		fields = ['cart','salon','product','quantity','type','order_date','order_status','order_time']
 		widgets = {'status': forms.HiddenInput(),'cart':forms.HiddenInput(),'salon':forms.HiddenInput(),
 		'order_date':forms.HiddenInput(),'order_status':forms.HiddenInput(),'order_time':forms.HiddenInput()}
+
+
+
+class change_prduct_quantity(ModelForm):
+	def __init__(self, *args, **kwargs):
+		super(change_prduct_quantity, self).__init__(*args, **kwargs)
+		self.helper = FormHelper(self)
+		self.helper.form_show_labels = False
+
+	class Meta:
+		model = ProductOrder
+		fields = ['quantity']

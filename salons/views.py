@@ -213,6 +213,25 @@ def add_worker(request,id):
 
 
 
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def edit_worker(request,id):
+    worker = SalonWorker.objects.get(id=id)
+    form = salon_worker_form(instance=worker)
+    if request.method == 'POST':
+        form = salon_worker_form(request.POST,instance=worker)
+        if form.is_valid():
+            form.save()
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/new_worker.html', context)
+
+
+
+
+
 
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['salon manager'])
@@ -229,6 +248,22 @@ def add_service(request,id):
     context = {'form':form}
     return render(request, 'pages/new_service.html', context)
 
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def edit_service(request,id):
+    service = Service.objects.get(id=id)
+    form = salon_serice_form(instance=service)
+    if request.method == 'POST':
+        form = salon_serice_form(request.POST,instance=service)
+        if form.is_valid():
+            form.save()
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/new_service.html', context)    
+
 @login_required(login_url=login_page)
 @allowed_users(allowed_roles=['salon manager'])
 def add_slot(request,id):
@@ -243,6 +278,23 @@ def add_slot(request,id):
 
     context = {'form':form}
     return render(request, 'pages/new_slot.html', context)
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def edit_slot(request,id):
+    slot = Slot.objects.get(id=id)
+    form = edit_slot_form(instance=slot)
+    if request.method == 'POST':
+        form = edit_slot_form(request.POST,instance=slot)
+        if form.is_valid():
+            form.save()
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/new_slot.html', context)
+
+
 
 
 @login_required(login_url=login_page)
@@ -264,6 +316,30 @@ def add_new_product(request,id):
 
     context = {'form':form}
     return render(request, 'pages/new_product.html', context)
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def edit_product(request,id):
+    product = Product.objects.get(id=id)
+    form = product_form(instance=product)
+    if request.method == 'POST':
+        form = product_form(request.POST,request.FILES,instance=product)
+        files = request.FILES.getlist('product_image')
+        if form.is_valid():
+            obj=form.save()
+            for image in files:
+                obj.product_image = image
+                obj.save()
+
+            return redirect('salon_user')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/new_product.html', context)
+
+
+
 
 
 
@@ -304,6 +380,13 @@ def salon_view(request,id):
     return render(request,'pages/salon_view.html',context)
 
 
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['salon manager'])
+def cancel_order(request,id):
+    order = Order.objects.get(id=id)
+    order.order_status = 'reject'
+    order.save()
+    return redirect('salon_user')
 
 
 
@@ -350,12 +433,18 @@ def salon_details(request,id):
 @allowed_users(allowed_roles=['customer'])
 def new_order(request,id):
     service = Service.objects.get(id=id)
+    if service.discount != 0:
+        total_discount = (service.price * service.discount)/100
+        discounted =  service.price - total_discount
+    else:
+        discounted =  service.price 
+
     salon_name = service.salon.shop_name
     salon = Salon.objects.get(shop_name = salon_name)
     cart = Cart.objects.get(user=request.user)
     date = datetime.date.today()
     time = datetime.datetime.now().time()
-    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':service.price,'order_date':date,'order_status':'cartpending'})
+    form = new_order_form(initial = {'service':service,'salon':salon,'cart':cart,'total':discounted,'order_date':date,'order_status':'cartpending'})
     form.getslots(salon.id)
     if request.method == 'POST':
         form = new_order_form(request.POST)
@@ -374,6 +463,10 @@ def new_order(request,id):
 @allowed_users(allowed_roles=['customer'])
 def new_product_order(request,id):
     product = Product.objects.get(id=id)
+    total_discount = (product.product_price * product.discount)/100
+    discounted =  product.product_price - total_discount
+
+
     salon_name = product.salon.shop_name
     salon = Salon.objects.get(shop_name = salon_name)
     if product.product_stock == 0:
@@ -389,8 +482,13 @@ def new_product_order(request,id):
         if form.is_valid():
             obj=form.save()
             quantities = form.cleaned_data['quantity']
-            obj.total = product.product_price * quantities
-            obj.save()
+            if discounted != 0:
+                obj.total = discounted * quantities
+                obj.save()
+            else:
+                obj.total = product.product_price * quantities
+                obj.save()  
+
             messages.success(request,'Product has been added to cart ')
             return redirect('salon_page',salon.id)
         
@@ -427,20 +525,6 @@ def order_now(request):
 
 
 
-@login_required(login_url=login_page)
-@allowed_users(allowed_roles=['customer'])
-def cancel_order(request,id):
-    order = Order.objects.get(id=id)
-    current_time = datetime.datetime.now()
-    order_time = order.order_time
-    cancel_time = current_time.total_seconds() - order_time.total_seconds()
-    if cancel_time < 3600:
-        order.delete()
-        messages.danger(request, 'order has been cancelled')
-        return redirect('home')
-    else:
-        messages.danger(request, 'order cannot be cancelled')
-        return redirect('home')
 
 
 
@@ -468,8 +552,9 @@ def all_appointments(request):
     cart = Cart.objects.get(user=user)
     orders = cart.order_set.all()
     appointments = orders.filter(order_status= "inprogress")
+    c_appointments = orders.filter(order_status= "reject")
     
-    context = {'appointments':appointments,'cart':cart}
+    context = {'appointments':appointments,'cart':cart,'c_appointments':c_appointments}
     return render(request, 'pages/appointments.html', context)
 
 
@@ -533,6 +618,42 @@ def expert_home(request):
     all_queries = Query.objects.filter(status='open')   
     context = {'all_queries':all_queries}
     return render(request, 'pages/expert_home.html', context)
+
+
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
+def removefromcart(request,id):
+    order = ProductOrder.objects.get(id=id)
+    order.delete()
+    return redirect('cart')
+
+
+
+
+@login_required(login_url=login_page)
+@allowed_users(allowed_roles=['customer'])
+def changeorderquantity(request,id):
+    order = ProductOrder.objects.get(id=id)
+    product = Product.objects.get(id=order.product.id)
+    form = change_prduct_quantity(instance=order)
+    if request.method == 'POST':
+        form = change_prduct_quantity(request.POST,instance=order)
+        if form.is_valid():
+            obj=form.save()
+            quantities = form.cleaned_data['quantity']
+            obj.total = product.product_price * quantities
+            obj.save()
+            messages.success(request,'Product has been updated ')
+            return redirect('cart')
+        
+
+    context = {'form':form}
+    return render(request, 'pages/chnageq.html', context)
+
+
 
 
 # def blog_view(request,id):

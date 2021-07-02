@@ -118,6 +118,11 @@
                   "
                 >
                   <h4 class="card-text tx-info"><b>{{b.service_name}}</b></h4>
+                  {% if b.discount != 0 %}
+                  <h6 class="card-text tx-success">
+                    <b>{{b.discount}}% off</b>
+                  </h6>
+                  {% endif %}
                   <h4 class="card-text tx-danger"><b>RS:{{b.price}}</b></h4>
                 </div>
                 <a
@@ -177,6 +182,11 @@
                   "
                 >
                   <h4 class="card-text tx-info"><b>{{p.product_name}}</b></h4>
+                  {% if p.discount != 0 %}
+                  <h6 class="card-text tx-success">
+                    <b>{{p.discount}}% off</b>
+                  </h6>
+                  {% endif %}
                   <h4 class="card-text tx-danger">
                     <b>RS:{{p.product_price}}</b>
                   </h4>

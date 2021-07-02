@@ -111,6 +111,7 @@
                     <th><b>worker_name</b></th>
                     <th><b>worker_contact</b></th>
                     <th><b>worker_status</b></th>
+                    <th><b>edit</b></th>
                     
                           
                   </tr>
@@ -121,6 +122,7 @@
                         <td class="tx-14">{{w.worker_name}}</td>
                         <td class="tx-14">{{w.worker_contact}}</td>
                         <td class="tx-14">{{w.worker_status}}</td>
+                        <td class="tx-14"><a href="{% url 'edit_worker' w.id %}" class="btn btn-xs btn-primary"> edit</a></td>
                         
                     </tr>
                     {% endfor %}
@@ -160,6 +162,8 @@
                         
                         <td class="tx-14">{{w.slot_start_time}}</td>
                         <td class="tx-14">{{w.slot_end_time}}</td>
+                        <td class="tx-14"><a href="{% url 'edit_slot' w.id %}" class="btn btn-xs btn-primary"> edit</a></td>
+
                         
                     </tr>
                     {% endfor %}
@@ -189,6 +193,7 @@
                   <tr>
                     <th><b>service name</b></th>
                     <th><b>service charges</b></th>
+                    <th><b>discount</b></th>
                     
                           
                   </tr>
@@ -198,6 +203,8 @@
                     <tr>
                         <td class="tx-14">{{s.service_name}}</td>
                         <td class="tx-14">{{s.price}}</td>
+                        <td class="tx-14">{{s.discount}}</td>
+                        <td class="tx-14"><a href="{% url 'edit_service' s.id %}" class="btn btn-xs btn-primary"> edit</a></td>
                        
                     </tr>
                     {% endfor %}
@@ -229,6 +236,8 @@
                     <th><b>Product</b></th>
                     <th><b>Price</b></th>
                     <th><b>in-stock</b></th>
+                    <th><b>discount</b></th>
+                    <th><b>edit</b></th>
                     
                     
                    
@@ -241,6 +250,8 @@
                    <td class="tx-14">{{p.product_name}}</td>
                    <td class="tx-14">{{p.product_price}}</td>
                    <td class="tx-14">{{p.product_stock}}</td>
+                   <td class="tx-14">{{p.discount}}%</td>
+                   <td class="tx-14"><a href="{% url 'edit_product' p.id %}" class="btn btn-xs btn-primary"> edit</a></td>
                    
                    
                  </tr>

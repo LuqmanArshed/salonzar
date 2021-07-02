@@ -175,6 +175,12 @@
                     <b>RS:{{p.product_price}}</b>
                   </h4>
                 </div>
+                <a
+                  href="{% url 'product_order' p.id %}"
+                  class="btn btn-sm btn-outline-success float-right"
+                >
+                  Add to cart</a
+                >
               </div>
             </div>
           </div>

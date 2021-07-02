@@ -63,6 +63,7 @@
                     <th><b>Address</b></th>
                     <th><b>Contact</b></th>
                     <th><b>Assign Worker</b></th>
+                    <th><b>Reject</b></th>
                      
                   </tr>
                 </thead>
@@ -78,7 +79,8 @@
                    <td class="tx-14">{{k.slot}}</td>
                    <td class="tx-14">{{k.cart.address}}</td>
                    <td class="tx-14">{{k.cart.phone}}</td>
-                   <td class="tx-14"><a class="btn btn-success" href="{% url 'assign_worker' k.id %}">Assign Worker</a></td>
+                   <td class="tx-14"><a class="btn btn-success" href="{% url 'assign_worker' k.id %}">Worker</a></td>
+                   <td class="tx-14"><a class="btn btn-success" href="{% url 'cancel' k.id %}">Reject</a></td>
                  </tr>
                  {% endfor %}
                   

@@ -65,6 +65,8 @@
                           <th>price</th>
                           <th>Salon</th>
                           <th>Quantity</th>
+                          <th>change quantity</th>
+                          <th>Remove</th>
                           
                         </tr>
                       </thead>
@@ -74,6 +76,9 @@
                           <td class="tx-14">{{p.total}}</td>
                           <td class="tx-14">{{p.salon}}</td>
                           <td class="tx-14">{{p.quantity}}</td>
+
+                          <td class="tx-14"><a href="{% url 'change_quantity' p.id %}" class="btn btn-xs btn-primary">change quantity</a></td>
+                          <td class="tx-14"><a href="{% url 'removefc' p.id %}" class="btn btn-xs btn-primary">Remove</a></td>
                         </tr>                
                       </tbody>
                     </table>

@@ -29,9 +29,17 @@ urlpatterns = [
      path('salon_profile/', views.salon_user_setting, name='salon_settings'), 
      path('salon_page/<int:id>', views.salon_view, name='salon_page'),
      path('add_new_slot/<int:id>', views.add_slot, name='add_slot'), 
+     path('edit_slot/<int:id>', views.edit_slot, name='edit_slot'), 
+
      path('add_new_worker/<int:id>', views.add_worker, name='new_worker'), 
-     path('add_new_service/<int:id>', views.add_service, name='new_service'), 
+     path('edit_worker/<int:id>', views.edit_worker, name='edit_worker'), 
+
+     path('add_new_service/<int:id>', views.add_service, name='new_service'),
+     path('edit_service/<int:id>', views.edit_service, name='edit_service'),
+
      path('add_product/<int:id>', views.add_new_product, name='add_product'),
+     path('edit_product/<int:id>', views.edit_product, name='edit_product'),
+
      path('worker_slots/<int:id>', views.worker_slots, name='worker_slots'), 
      path('assign_worker/<int:id>', views.assign_worker, name='assign_worker'),
      path('complete_product_order/<int:id>', views.product_order_status, name='po_complete'),
@@ -44,10 +52,12 @@ urlpatterns = [
       path('myappointments/', views.all_appointments, name='appointments'),
       path('order_status/<int:id>', views.change_order_status, name='complete_order_status'),
       path('cancel_order/<int:id>', views.cancel_order, name='cancel'),
+       path('deleteproduct/<int:id>', views.removefromcart, name='removefc'),
 
 
 
      path('new_product_order/<int:id>', views.new_product_order, name='product_order'),
+     path('change_quantity/<int:id>', views.changeorderquantity, name='change_quantity'),
 
      
      path('ask_an_expert/', views.all_queries, name='query_page'),
